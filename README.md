@@ -1,6 +1,6 @@
 sass-index
 ==========
-Given a directory, generates an index files for this directory, and any
+Given a directory, generates an index.sass file for this directory, and any
 nested directories.
 
 
