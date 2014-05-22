@@ -46,12 +46,12 @@ List of extensions you want to analyze.
 __Default__: `['.sass','.scss']`
 
 ### ignore_dirs
-	Directory to
+Directories to ignore in index generation.
 
 __Default__: `[]`
 
 ### ignore_files
-	Directory to
+Files to ignore in index generation.
 
 __Default__:
 ````
