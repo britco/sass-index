@@ -1,13 +1,12 @@
 path = require('path')
 fs = require('fs')
+util = require('util')
+events = require('events')
 _ = require('underscore')
 walkdir = require('walkdir')
 
-module.exports = (opts,cb_each,cb_final) ->
+index = (opts) ->
 	# Collect arguments.. can be in various formats
-	if arguments.length is 2
-		cb_final = cb_each
-
 	if not _.isObject(opts) then opts = { dir: dir }
 
 	_.defaults opts,
@@ -82,11 +81,17 @@ module.exports = (opts,cb_each,cb_final) ->
 
 		fs.writeFileSync(outputFile,output)
 
-		cb_each(outputFile,output)
+		this.emit("data", outputFile, output)
 
 	walker.on 'end', =>
 		# Write an index for the root dir.
 		writeIndexFor(opts.dir)
 
 		# And then return
-		cb_final()
+		this.emit("end")
+
+	return events.EventEmitter.call(this)
+
+# Return instance on include
+util.inherits(index,events.EventEmitter)
+module.exports = -> new index(arguments...)
