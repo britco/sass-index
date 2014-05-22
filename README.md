@@ -15,7 +15,6 @@ SASS_FILES
 
 When you run:
 ````
-
 require('sass-index')(
 	dir: 'SASS_FILES/'
 )
