@@ -6,11 +6,15 @@ nested directories.
 
 ## Example
 
-For directory structure
+For directory structure:
+````
 SASS_FILES
 	foo.sass
 	bar.sass
 ````
+
+````
+
 require('sass-index')(
 	dir: 'SASS_FILES/'
 )
@@ -58,24 +62,6 @@ __Default__:
 	'_index.scss'
 ]
 ````
-### dir
-	Directory to
-
-__Default__: `./`
-
-### dir
-		basedir: './'
-		dir: './'
-		extensions: ['.sass','.scss']
-		ignore_dirs:['./bootstrap','./bundles']
-		ignore_files: [
-			'.DS_Store',
-			'index.sass',
-			'index.scss',
-			'_index.sass',
-			'_index.scss'
-		]
-
 
 ## License
 Available under the [MIT License](LICENSE.md).
