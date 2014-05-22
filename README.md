@@ -13,6 +13,7 @@ SASS_FILES
 	bar.sass
 ````
 
+When you run:
 ````
 
 require('sass-index')(
