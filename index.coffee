@@ -24,8 +24,6 @@ index = (opts) ->
 
 	opts.dir = dir = path.resolve(opts.basedir,opts.dir)
 
-	console.log 'dir',opts.basedir,opts.dir
-
 	opts.ignore_dirs = opts.ignore_dirs.map (dir) ->
 		return path.resolve(opts.basedir,dir)
 
@@ -72,6 +70,7 @@ index = (opts) ->
 		# Write the SASS file
 		output = ""
 		for file in files
+			file = file.replace(/^\.\/\.\//,'./')
 			output += """@import "#{file}"\n"""
 
 		output = output.trim()
