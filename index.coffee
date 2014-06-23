@@ -24,6 +24,8 @@ index = (opts) ->
 
 	opts.dir = dir = path.resolve(opts.basedir,opts.dir)
 
+	console.log 'dir',opts.basedir,opts.dir
+
 	opts.ignore_dirs = opts.ignore_dirs.map (dir) ->
 		return path.resolve(opts.basedir,dir)
 
@@ -56,14 +58,14 @@ index = (opts) ->
 
 			if stat.isDirectory()
 				if not shouldIgnoreDir(file)
-					files.push(importName + '/index')
+					files.push('./' + importName + '/index')
 			else
 				ext = path.extname(file)
 				if (
 					ext in opts.extensions and
 					path.basename(file) not in opts.ignore_files
 				)
-					files.push(importName.slice(0,ext.length * -1))
+					files.push('./' + importName.slice(0,ext.length * -1))
 
 		if files.length is 0 then return false
 
