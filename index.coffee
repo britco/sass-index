@@ -13,34 +13,74 @@ index = (opts) ->
 		basedir: './'
 		dir: './'
 		extensions: ['.sass','.scss']
-		ignore_dirs:['./bootstrap','./bundles']
-		ignore_files: [
-			'.DS_Store',
-			'index.sass',
-			'index.scss',
-			'_index.sass',
-			'_index.scss'
+		ignore: [
 		]
+
+	# Add ignore paths that can't be overwrited
+	opts = _.extend opts,
+		ignore: _.uniq(opts.ignore.concat([
+			'**/.DS_Store',
+			'**/index.sass',
+			'**/index.scss',
+			'**/_index.sass',
+			'**/_index.scss'
+		]))
 
 	opts.dir = dir = path.resolve(opts.basedir,opts.dir)
 
-	opts.ignore_dirs = opts.ignore_dirs.map (dir) ->
+	# Resolve ignore paths to opts.basedir
+	opts.ignore = opts.ignore.map (dir) ->
 		return path.resolve(opts.basedir,dir)
 
 	# Start searching for files
 	walker = walkdir(dir)
 
 	walker.on 'directory', (dir) ->
-		return if shouldIgnoreDir(dir)
+		return if shouldIgnorePath(dir)
 
 		writeIndexFor(dir)
 
-	# Check if you should ignore a directory
-	shouldIgnoreDir = (dir) ->
-		for ignore_dir in opts.ignore_dirs
-			if dir.indexOf(ignore_dir) is 0
-				return true
+	# Check if file is marked as a path to ignore
+	indexignore_cache = {}
+	shouldIgnorePath = (file,stat=null) ->
+		path = require('path')
+		fs = require('fs')
+		minimatch = require('minimatch')
 
+		ignore_globs = opts.ignore
+
+		unless stat?
+			stat = fs.statSync(file)
+
+		if stat.isDirectory()
+			dir = file
+		else
+			dir = path.dirname(file)
+
+		# Merge in entries from the .indexignore file if it exists
+		if not _.has(indexignore_cache,dir)
+			try
+				indexignore_contents = fs.readFileSync(path.join(dir,'.indexignore'))
+			catch
+				indexignore_contents = null
+
+			if indexignore_contents instanceof Buffer
+				new_ignore_list = indexignore_contents.toString().split(/[\r|\n]/)
+				new_ignore_list = _.filter(new_ignore_list, (subpath) => not _.isEmpty(subpath))
+				ignore_globs = ignore_globs.concat(new_ignore_list.map((subfile) => path.resolve(dir,subfile)))
+
+			indexignore_cache[dir] = ignore_globs
+		else
+			ignore_globs = indexignore_cache[dir]
+
+		console.log ignore_globs
+
+		# Now loop through ignore globs and check if the path matches any of them..
+		# Checks for directories or files, see
+		# https://github.com/EE/gitignore-to-glob/blob/master/lib/gitignore-to-glob.js#L53
+		for ignore_glob in ignore_globs
+			if minimatch(file, ignore_glob) or minimatch(file, ignore_glob + '/**')
+				return true
 		return false
 
 	# Write the SASS index file for a directory
@@ -54,16 +94,13 @@ index = (opts) ->
 			relative = path.relative(dir,file)
 			importName = './' + relative
 
-			if stat.isDirectory()
-				if not shouldIgnoreDir(file)
-					files.push('./' + importName + '/index')
-			else
-				ext = path.extname(file)
-				if (
-					ext in opts.extensions and
-					path.basename(file) not in opts.ignore_files
-				)
-					files.push('./' + importName.slice(0,ext.length * -1))
+			if not shouldIgnorePath(file,stat)
+				if stat.isDirectory()
+						files.push('./' + importName + '/index')
+				else
+					ext = path.extname(file)
+					if (ext in opts.extensions)
+						files.push('./' + importName.slice(0,ext.length * -1))
 
 		if files.length is 0 then return false
 

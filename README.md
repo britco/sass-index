@@ -44,24 +44,10 @@ List of extensions you want to analyze.
 
 __Default__: `['.sass','.scss']`
 
-### ignore_dirs
-Directories to ignore in index generation.
+### ignore
+Paths to ignore in index generation. Accepts glob syntax, like path/**.
 
 __Default__: `[]`
-
-### ignore_files
-Files to ignore in index generation.
-
-__Default__:
-````
-[
-	'.DS_Store',
-	'index.sass',
-	'index.scss',
-	'_index.sass',
-	'_index.scss'
-]
-````
 
 ## License
 Available under the [MIT License](LICENSE.md).
