@@ -73,8 +73,6 @@ index = (opts) ->
 		else
 			ignore_globs = indexignore_cache[dir]
 
-		console.log ignore_globs
-
 		# Now loop through ignore globs and check if the path matches any of them..
 		# Checks for directories or files, see
 		# https://github.com/EE/gitignore-to-glob/blob/master/lib/gitignore-to-glob.js#L53
