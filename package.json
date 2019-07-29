@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/britco/sass-index",
   "dependencies": {
-    "coffee-script": "^1.12.7",
+    "coffeescript": "^2.4.1",
     "minimatch": "^3.0.4",
     "underscore": "^1.9.1",
     "walkdir": "^0.4.1"
