@@ -6,7 +6,7 @@ _ = require('underscore')
 walkdir = require('walkdir')
 
 index = (opts) ->
-	# Collect arguments.. can be in various formats
+# Collect arguments.. can be in various formats
 	if not _.isObject(opts) then opts = { dir: dir }
 
 	_.defaults opts,
@@ -94,7 +94,7 @@ index = (opts) ->
 
 			if not shouldIgnorePath(file,stat)
 				if stat.isDirectory()
-						files.push('./' + importName + '/index')
+					files.push('./' + importName + '/index')
 				else
 					ext = path.extname(file)
 					if (ext in opts.extensions)
@@ -106,9 +106,7 @@ index = (opts) ->
 		output = ""
 		for file in files
 			file = file.replace(/^\.\/\.\//,'./')
-			output += """@import "#{file}"\n"""
-
-		output = output.trim()
+			output += """@import '#{file}'\n"""
 
 		if fs.existsSync(path.resolve(dir,"./_index.sass"))
 			outputFile = path.resolve(dir,"./_index.sass")
@@ -120,7 +118,7 @@ index = (opts) ->
 		this.emit("data", outputFile, output)
 
 	walker.on 'end', =>
-		# Write an index for the root dir.
+# Write an index for the root dir.
 		writeIndexFor(opts.dir)
 
 		# And then return
